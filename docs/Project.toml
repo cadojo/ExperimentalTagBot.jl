@@ -1,0 +1,6 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+DocumenterQuarto = "73f83fcb-c367-40db-89b6-8fd94701aaf2"
+ExperimentalTagBot = "930da1f0-8ee6-4872-b248-bb5528d4fa7c"
+IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
+Quarto = "d7167be5-f61b-4dc9-b75c-ab62374668c5"
