@@ -5,7 +5,8 @@ using Git: git
 import GitHub
 import Markdown
 
-export versions, url, project, untagged, parent, message, update
+export
+    registered, versions, url, project, untagged, parent, message, release, update
 
 """
 Given a package name, return map from all versions released in the general 
@@ -55,6 +56,7 @@ function url(package::AbstractString; registry="General")
     return Pkg.Registry.registry_info(pkg).repo
 end
 
+
 """
 Given a package name, return `<owner>/<project>`.
 """
@@ -97,9 +99,48 @@ function parent(version, versions)
     return "v" * string(v)
 end
 
+function clone(package)
+    path = tempname()
+
+    IOCapture.capture() do
+        run(git(["clone", "--bare", url(package), path]))
+    end
+
+    return path
+end
+
+using IOCapture
+# https://arbitrary-but-fixed.net/git/julia/2021/03/18/git-tree-sha1-to-commit-sha1.html
+function commit(package::AbstractString, version; kwargs...)
+    tree = registered(package)["v$version"]
+
+    path = clone(package)
+
+    response = IOCapture.capture() do
+        run(pipeline(Cmd(`git log --pretty=raw`; dir=path), `grep -B 1 $tree`))
+    end
+
+    hascommit(line) = startswith(line, "commit ")
+
+    lines = collect(eachline(IOBuffer(response.output)))
+    index = findfirst(hascommit, lines)
+
+
+    if isnothing(index)
+        throw(ErrorException("failed to find any commits associated with tree SHA1($tree)"))
+    else
+        line = lines[index]
+
+        rm(path; force=true, recursive=true)
+
+        return strip(replace(line, "commit " => ""))
+    end
+
+end
+
 function message(package::AbstractString, version; kwargs...)
     base = parent(version, versions(package))
-    diff = GitHub.compare(project(package), base, version; kwargs...)
+    diff = GitHub.compare(project(package), base, commit(package, version); kwargs...)
 
     messages = [
         replace(commit.commit.message, "\n\n" => "\n")
@@ -112,13 +153,41 @@ function message(package::AbstractString, version; kwargs...)
     ])
 end
 
+function release(package::AbstractString, version; prefix=nothing, kwargs...)
+    prefix = isnothing(prefix) ? package * "-" : prefix
+
+    repo = project(package)
+    hash = commit(package, version)
+
+    tag = "$(prefix)v$(version)"
+
+    default = Dict(
+        "tag_name" => tag,
+        "target_commitish" => hash,
+        "name" => "Release v$version for $package.jl",
+        "body" => string(message(package, version; kwargs...)),
+        "draft" => false,
+        "prerelease" => false,
+        "generate_release_notes" => false
+    )
+
+    options = merge(
+        (; params=default),
+        kwargs
+    )
+
+    @info options
+    GitHub.create_release(repo; options...)
+
+end
+
 
 function update(package::AbstractString; kwargs...)
     registered = registered(package)
     unreleased = untagged(package; kwargs...)
 
     for version in unreleased
-
+        create_release
     end
 end
 

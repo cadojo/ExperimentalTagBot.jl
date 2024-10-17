@@ -1,6 +1,7 @@
-using GitHub
+using Revise
+import GitHub as GH
 using ExperimentalTagBot
 
-auth = authenticate(readchomp(`gh auth token`))
-proj = project("GeneralAstrodynamics")
-
+auth = GH.authenticate(readchomp(`gh auth token`))
+package = "GeneralAstrodynamics"
+proj = project(package)
