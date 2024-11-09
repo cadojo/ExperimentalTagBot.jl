@@ -4,6 +4,7 @@ import Pkg
 using Git: git
 import GitHub
 import Markdown
+import IOCapture
 
 export
     registered, versions, url, project, untagged, parent, message, release, update
@@ -80,7 +81,8 @@ function untagged(package::AbstractString; kwargs...)
     tags = [tag.tag for tag in tags if !isnothing(tag.tag)]
 
     for tag in tags
-        delete!(registered, replace(tag, (package * "-") => ""))
+        version = replace(tag, (package * "-") => "")
+        deleteat!(registered, findall(v -> v == version, registered))
     end
 
     tags = collect(keys(registered))
@@ -109,9 +111,20 @@ function clone(package)
     return path
 end
 
-using IOCapture
-# https://arbitrary-but-fixed.net/git/julia/2021/03/18/git-tree-sha1-to-commit-sha1.html
+# git clone --no-checkout --filter=blob:none --sparse https://github.com/JuliaRegistries/General $(tempdir())
+# cd General
+# git sparse-checkout set G/GeneralAstrodynamics
+# git checkout
+
+
 function commit(package::AbstractString, version; kwargs...)
+    prefix, version = rsplit(version, "v"; limit=2)
+
+end
+
+# https://arbitrary-but-fixed.net/git/julia/2021/03/18/git-tree-sha1-to-commit-sha1.html
+function find_commit(package::AbstractString, version; kwargs...)
+    prefix, version = rsplit(version, "v"; limit=2)
     tree = registered(package)["v$version"]
 
     path = clone(package)
@@ -139,8 +152,10 @@ function commit(package::AbstractString, version; kwargs...)
 end
 
 function message(package::AbstractString, version; kwargs...)
+    prefix, version = rsplit(version, "v"; limit=2)
     base = parent(version, versions(package))
-    diff = GitHub.compare(project(package), base, commit(package, version); kwargs...)
+    head = commit(package, version)
+    diff = GitHub.compare(project(package), "$(prefix)$(base)", "$(prefix)$(head)"; kwargs...)
 
     messages = [
         replace(commit.commit.message, "\n\n" => "\n")
@@ -148,7 +163,8 @@ function message(package::AbstractString, version; kwargs...)
     ]
 
     return Markdown.MD([
-        Markdown.Header{2}("Commits"),
+        Markdown.Link("diff since $parent", "$(url(package))/compare/$(prefix)$(base)...$(prefix)$(head)"),
+        Markdown.Header{2}("Changelog"),
         Markdown.List(messages)
     ])
 end
@@ -176,7 +192,10 @@ function release(package::AbstractString, version; prefix=nothing, kwargs...)
         kwargs
     )
 
-    @info options
+    @debug """creating release with the following options:
+    $(collect(options))
+    """
+
     GitHub.create_release(repo; options...)
 
 end
