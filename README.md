@@ -2,7 +2,7 @@
 
 _A minimum-viable [TagBot](https://github.com/JuliaRegistries/TagBot) implementation in Julia!_
 
-> [!IMPORTANT]
+> [!CAUTION]
 >
 > This project is being actively developed! It works in local testing, and will be made more robust in 2025.
 
