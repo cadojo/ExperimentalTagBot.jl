@@ -39,12 +39,12 @@ With this authentication, you can use `ExperimentalTagBot` to query Git commits 
 import ExperimentalTagBot
 
 # package = ... # some package you own
-commit = ExperimentalTagBot.commit(package, "v0.1.0")
-untagged_versions = ExperimentalTagBot.untagged(package)
+commit = ExperimentalTagBot.commit(package, "v0.1.0"; auth = auth)
+untagged_versions = ExperimentalTagBot.untagged(package; auth = auth)
 
 if !isempty(untagged_versions)
   # there are new releases in the General registry
-  ExperimentalTagBot.update(package) # creates releases for untagged versions
+  ExperimentalTagBot.update(package; auth = auth) # creates releases for untagged versions
 end
 ```
 
