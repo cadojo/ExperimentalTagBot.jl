@@ -48,6 +48,14 @@ function versions(package::AbstractString)
 end
 
 """
+Given a registry name, return the repository.
+"""
+function registry_url(registry)
+    reg = only(filter(r -> r.name == registry, Pkg.Registry.reachable_registries()))
+    return reg.repo
+end
+
+"""
 Given a package name, return the project repository registered in the General 
 registry.
 """
@@ -57,19 +65,18 @@ function url(package::AbstractString; registry="General")
     return Pkg.Registry.registry_info(pkg).repo
 end
 
+repo(url) = replace(url, "http://" => "",
+    "https://" => "",
+    "www." => "",
+    "github.com/" => "",
+    ".git" => ""
+)
 
 """
 Given a package name, return `<owner>/<project>`.
 """
 function project(package::AbstractString)
-    return replace(
-        url(package),
-        "http://" => "",
-        "https://" => "",
-        "www." => "",
-        "github.com/" => "",
-        ".git" => ""
-    )
+    return repo(url(package))
 end
 
 """
@@ -78,14 +85,14 @@ Given a package name, return all registered versions which are not yet released.
 function untagged(package::AbstractString; kwargs...)
     registered = versions(package)
     tags, metadata = GitHub.tags(project(package); kwargs...)
-    tags = [tag.tag for tag in tags if !isnothing(tag.tag)]
+    tags = String[tag.tag for tag in tags if !isnothing(tag.tag)]
 
     for tag in tags
         version = replace(tag, (package * "-") => "")
         deleteat!(registered, findall(v -> v == version, registered))
     end
 
-    tags = collect(keys(registered))
+    tags = registered
     sort!(tags, by=VersionNumber)
 
     return tags
@@ -101,58 +108,37 @@ function parent(version, versions)
     return "v" * string(v)
 end
 
-function clone(package)
-    path = tempname()
-
-    IOCapture.capture() do
-        run(git(["clone", "--bare", url(package), path]))
-    end
-
-    return path
+function release_prs(package, version; registry="General", kwargs...)
+    v = "v" * string(VersionNumber(version))
+    # TODO add registry specification
+    results = GitHub.gh_get_json(GitHub.DEFAULT_API, "/search/issues"; kwargs..., params=Dict("q" => "$package $v in:title is:pr"))
+    return [GitHub.PullRequest(result) for result in results["items"]]
 end
 
-# git clone --no-checkout --filter=blob:none --sparse https://github.com/JuliaRegistries/General $(tempdir())
-# cd General
-# git sparse-checkout set G/GeneralAstrodynamics
-# git checkout
 
+function commit(package::AbstractString, version; registry="General", kwargs...)
+    prs = [
+        GitHub.pull_request(repo(registry_url(registry)), pr.number)
+        for pr in release_prs(package, version; registry=registry, kwargs...)
+    ]
 
-function commit(package::AbstractString, version; kwargs...)
-    prefix, version = rsplit(version, "v"; limit=2)
+    filter!(pr -> pr.merged, prs) # remove PRs which did not merge
+    sort!(prs; by=pr -> pr.closed_at) # sort PRs by merge timestamp
 
-end
+    pr = last(prs) # take the most recent merged PR
 
-# https://arbitrary-but-fixed.net/git/julia/2021/03/18/git-tree-sha1-to-commit-sha1.html
-function find_commit(package::AbstractString, version; kwargs...)
-    prefix, version = rsplit(version, "v"; limit=2)
-    tree = registered(package)["v$version"]
-
-    path = clone(package)
-
-    response = IOCapture.capture() do
-        run(pipeline(Cmd(`git log --pretty=raw`; dir=path), `grep -B 1 $tree`))
+    lines = readlines(IOBuffer(pr.body))
+    for line in lines
+        if startswith(line, "- Commit: ")
+            prefix, hash = rsplit(line, ":"; limit=2)
+            return strip(hash)
+        end
     end
-
-    hascommit(line) = startswith(line, "commit ")
-
-    lines = collect(eachline(IOBuffer(response.output)))
-    index = findfirst(hascommit, lines)
-
-
-    if isnothing(index)
-        throw(ErrorException("failed to find any commits associated with tree SHA1($tree)"))
-    else
-        line = lines[index]
-
-        rm(path; force=true, recursive=true)
-
-        return strip(replace(line, "commit " => ""))
-    end
-
+    error("commit not found for $package $version")
 end
 
 function message(package::AbstractString, version; kwargs...)
-    prefix, version = rsplit(version, "v"; limit=2)
+    version = string(VersionNumber(version))
     base = parent(version, versions(package))
     head = commit(package, version)
     diff = GitHub.compare(project(package), "$(prefix)$(base)", "$(prefix)$(head)"; kwargs...)
@@ -173,6 +159,7 @@ function release(package::AbstractString, version; prefix=nothing, kwargs...)
     prefix = isnothing(prefix) ? package * "-" : prefix
 
     repo = project(package)
+    version = string(VersionNumber(version))
     hash = commit(package, version)
 
     tag = "$(prefix)v$(version)"
@@ -192,7 +179,7 @@ function release(package::AbstractString, version; prefix=nothing, kwargs...)
         kwargs
     )
 
-    @debug """creating release with the following options:
+    @info """creating release with the following options:
     $(collect(options))
     """
 
@@ -201,12 +188,11 @@ function release(package::AbstractString, version; prefix=nothing, kwargs...)
 end
 
 
-function update(package::AbstractString; kwargs...)
-    registered = registered(package)
+function update(package::AbstractString; registry="General", prefix=nothing, kwargs...)
     unreleased = untagged(package; kwargs...)
 
     for version in unreleased
-        create_release
+        release(package, version; registry=registry, prefix=prefix, kwargs...)
     end
 end
 
