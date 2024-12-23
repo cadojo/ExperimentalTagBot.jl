@@ -111,14 +111,14 @@ end
 function release_prs(package, version; registry="General", kwargs...)
     v = "v" * string(VersionNumber(version))
     # TODO add registry specification
-    results = GitHub.gh_get_json(GitHub.DEFAULT_API, "/search/issues"; kwargs..., params=Dict("q" => "$package $v in:title is:pr"))
+    results = GitHub.gh_get_json(GitHub.DEFAULT_API, "/search/issues"; kwargs..., params="q=$package%20$v%20in%3Atitle%20is%3Apr%20repo%3A$(repo(registry_url(registry)))", kwargs...)
     return [GitHub.PullRequest(result) for result in results["items"]]
 end
 
 
 function commit(package::AbstractString, version; registry="General", kwargs...)
     prs = [
-        GitHub.pull_request(repo(registry_url(registry)), pr.number)
+        GitHub.pull_request(repo(registry_url(registry)), pr.number; kwargs...)
         for pr in release_prs(package, version; registry=registry, kwargs...)
     ]
 
