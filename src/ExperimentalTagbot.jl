@@ -147,10 +147,47 @@ function find_pull_requests(package, version; kwargs...)
         GitHub.DEFAULT_API,
         "/search/issues";
         kwargs...,
-        params = "q=merged%3A$base_date...$head_date%20is%3Apr%20repo%3A$(repository_name(package_url(package)))",
+        params = "q=merged%3A>=$base_date%20is%3Apr%20repo%3A$(repository_name(package_url(package)))",
         kwargs...
     )
-    return [GitHub.PullRequest(result) for result in results["items"]]
+
+    prs = [GitHub.PullRequest(result)
+           for result in results["items"]]
+
+    return [pr
+            for pr in prs
+            if pr.closed_at <= head.commit.author.date]
+end
+"""
+Given a package name and version, return all pull requests from the package 
+repository between the version and its parent.
+"""
+function find_issues(package, version; kwargs...)
+    repo = repository_name(package_url(package))
+    base = GitHub.commit(
+        repo, parent_hash(version, registered_versions(package)); kwargs...)
+    head = GitHub.commit(repo, registered_version_hash(package, version); kwargs...)
+
+    base_date = string(Date(base.commit.author.date))
+    base_date = replace(base_date, ":" => "%3A")
+
+    head_date = string(Date(head.commit.author.date))
+    head_date = replace(head_date, ":" => "%3A")
+
+    results = GitHub.gh_get_json(
+        GitHub.DEFAULT_API,
+        "/search/issues";
+        kwargs...,
+        params = "q=closed%3A>=$base_date%20is%3Aissue%20repo%3A$(repository_name(package_url(package)))",
+        kwargs...
+    )
+
+    issues = [GitHub.Issue(result)
+              for result in results["items"]]
+
+    return [issue
+            for issue in issues
+            if issue.closed_at <= head.commit.author.date]
 end
 
 """
@@ -185,13 +222,18 @@ function release_message(package::AbstractString, version; kwargs...)
     base = parent_hash(version, registered_versions(package))
     head = registered_version_hash(package, version)
     diff = GitHub.compare(
-        project(package), "$(prefix)$(base)", "$(prefix)$(head)"; kwargs...)
+        repository_name(package_url(package)), "$(prefix)$(base)", "$(prefix)$(head)"; kwargs...)
 
     messages = [replace(commit.commit.message, "\n\n" => "\n") for commit in diff.commits]
-    pull_requests = ["#$(pr.number): $(pr.title)"
-                     for pr in find_pull_requests(package, version; kwargs...)]
+    pull_requests = find_pull_requests(package, version; kwargs...)
+    issues = find_issues(package, version; kwargs...)
+
     if isempty(pull_requests)
-        push!(pull_requests, "None")
+        pull_requests = ["None"]
+    end
+
+    if isempty(issues)
+        issues = ["None"]
     end
 
     return Markdown.MD([
@@ -199,6 +241,8 @@ function release_message(package::AbstractString, version; kwargs...)
             "Diff since $parent",
             "$(url(package))/compare/$(prefix)$(base)...$(prefix)$(head)"
         ),
+        Markdown.Header{2}("Closed Issues"),
+        Markdown.List(issues),
         Markdown.Header{2}("Merged Pull Requests"),
         Markdown.List(pull_requests),
         Markdown.Header{2}("Changelog"),
