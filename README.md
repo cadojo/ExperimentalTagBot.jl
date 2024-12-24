@@ -38,14 +38,8 @@ With this authentication, you can use `ExperimentalTagBot` to query Git commits 
 ```julia
 import ExperimentalTagBot
 
-# package = ... # some package you own
-commit = ExperimentalTagBot.commit(package, "v0.1.0"; auth = auth)
-untagged_versions = ExperimentalTagBot.untagged(package; auth = auth)
-
-if !isempty(untagged_versions)
-  # there are new releases in the General registry
-  ExperimentalTagBot.update(package; auth = auth) # creates releases for untagged versions
-end
+package = "" # some package you own
+ExperimentalTagBot.create_releases(package; auth = auth)
 ```
 
 
