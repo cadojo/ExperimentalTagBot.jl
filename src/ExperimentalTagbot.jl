@@ -3,7 +3,7 @@ module ExperimentalTagBot
 import Pkg
 using Git: git
 import GitHub
-import Markdown
+using Markdown
 import IOCapture
 using Dates
 
@@ -16,8 +16,8 @@ registry to the Git SHA1 hashes in the project location.
 This code was originally written by user @yakir12 on Julia's Discourse in 
 the following post: https://discourse.julialang.org/t/pkg-version-list/1257/10.
 """
-function registered_versions_map(package::AbstractString)
-    registry = only(filter(r -> r.name == "General", Pkg.Registry.reachable_registries()))
+function registered_versions_map(package::AbstractString; registry = "General")
+    registry = only(filter(r -> r.name == registry, Pkg.Registry.reachable_registries()))
 
     local pkg
 
@@ -45,7 +45,7 @@ end
 """
 Given a package name, return all versions released in the general registry.
 """
-function registered_versions(package::AbstractString)
+function registered_versions(package::AbstractString; registry = "General")
     vs = collect(keys(registered_versions_map(package)))
     sort!(vs, by = VersionNumber)
     return vs
@@ -86,8 +86,8 @@ end
 """
 Given a package name, return all registered versions which are not yet released.
 """
-function untagged_versions(package::AbstractString; kwargs...)
-    registered = registered_versions(package)
+function untagged_versions(package::AbstractString; registry = "General", kwargs...)
+    registered = registered_versions(package; registry = registry)
     tags, metadata = GitHub.tags(repository_name(package_url(package)); kwargs...)
     tags = String[tag.tag for tag in tags if !isnothing(tag.tag)]
 
@@ -217,16 +217,21 @@ function registered_version_hash(
     error("commit not found for $package $version")
 end
 
-function release_message(package::AbstractString, version; kwargs...)
+function release_message(package::AbstractString, version; prefix = nothing, kwargs...)
     version = string(VersionNumber(version))
     base = parent_hash(version, registered_versions(package))
     head = registered_version_hash(package, version)
-    diff = GitHub.compare(
-        repository_name(package_url(package)), "$(prefix)$(base)", "$(prefix)$(head)"; kwargs...)
 
-    messages = [replace(commit.commit.message, "\n\n" => "\n") for commit in diff.commits]
-    pull_requests = find_pull_requests(package, version; kwargs...)
-    issues = find_issues(package, version; kwargs...)
+    prefix = isnothing(prefix) ? package * "-" : prefix
+    diff = GitHub.compare(
+        repository_name(package_url(package)), base, head; kwargs...)
+
+    messages = ["*" * replace(commit.commit.message, "\n\n" => "\n")
+                for commit in diff.commits]
+    pull_requests = ["* $(pr.title) ([#$(pr.number)]($(pr.html_url)))"
+                     for pr in find_pull_requests(package, version; kwargs...)]
+    issues = ["* $(issue.title) ([#$(issue.number)]($(issue.html_url)))"
+              for issue in find_issues(package, version; kwargs...)]
 
     if isempty(pull_requests)
         pull_requests = ["None"]
@@ -236,24 +241,24 @@ function release_message(package::AbstractString, version; kwargs...)
         issues = ["None"]
     end
 
-    return Markdown.MD([
-        Markdown.Link(
-            "Diff since $parent",
-            "$(url(package))/compare/$(prefix)$(base)...$(prefix)$(head)"
-        ),
-        Markdown.Header{2}("Closed Issues"),
-        Markdown.List(issues),
-        Markdown.Header{2}("Merged Pull Requests"),
-        Markdown.List(pull_requests),
-        Markdown.Header{2}("Changelog"),
-        Markdown.List(messages)
-    ])
+    lines = (
+        "[Diff since $parent]($(package_url(package))/compare/$base...$head)",
+        "\n## Closed Issues",
+        join(issues, "\n"),
+        "\n## Merged Pull Requests",
+        join(pull_requests, "\n"),
+        "\n## Changelog",
+        join(messages, "\n")
+    )
+
+    return join(lines, "\n")
 end
 
-function create_release(package::AbstractString, version; prefix = nothing, kwargs...)
+function create_release(
+        package::AbstractString, version; prefix = nothing, kwargs...)
     prefix = isnothing(prefix) ? package * "-" : prefix
 
-    repo = repository_name(package)
+    repo = repository_name(package_url(package))
     version = string(VersionNumber(version))
     hash = registered_version_hash(package, version)
 
@@ -263,7 +268,7 @@ function create_release(package::AbstractString, version; prefix = nothing, kwar
         "tag_name" => tag,
         "target_commitish" => hash,
         "name" => "Release v$version for $package.jl",
-        "body" => string(release_message(package, version; kwargs...)),
+        "body" => release_message(package, version; kwargs...),
         "draft" => false,
         "prerelease" => false,
         "generate_release_notes" => false
@@ -271,19 +276,21 @@ function create_release(package::AbstractString, version; prefix = nothing, kwar
 
     options = merge((; params = default), kwargs)
 
-    @info """creating release with the following options:
+    @debug """creating release with the following options:
     $(collect(options))
     """
+
+    @info "Creating Release v$(version) for $package.jl"
 
     GitHub.create_release(repo; options...)
 end
 
 function create_releases(
-        package::AbstractString; registry = "General", prefix = nothing, kwargs...)
-    unreleased = untagged_versions(package; kwargs...)
+        package::AbstractString; prefix = nothing, registry = "General", kwargs...)
+    unreleased = untagged_versions(package; registry = registry, kwargs...)
 
     for version in unreleased
-        create_release(package, version; registry = registry, prefix = prefix, kwargs...)
+        create_release(package, version; prefix = prefix, kwargs...)
     end
 end
 
