@@ -13,6 +13,7 @@ Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 
 [compat]
 Dates = "1.11.0"
+Git = "1"
 GitHub = "5.9.0"
 IOCapture = "0.2.5"
 
