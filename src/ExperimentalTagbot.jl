@@ -1,4 +1,18 @@
+"""
+A minimal TagBot implementation in Julia!
+
+## Exports 
+
+$(EXPORTS)
+"""
 module ExperimentalTagBot
+
+using DocStringExtensions
+
+@template DEFAULT = """
+                    $(SIGNATURES)
+                    $(DOCSTRING)
+                    """
 
 import Pkg
 using Git: git
