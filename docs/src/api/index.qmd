@@ -16,5 +16,5 @@ using TagBot
 ```{julia}
 #| echo: false
 #| output: asis
-DocumenterQuarto.autodoc(TagBot)
+DocumenterQuarto.autodoc(TagBot, :untagged_versions, :create_release, :create_releases)
 ```
