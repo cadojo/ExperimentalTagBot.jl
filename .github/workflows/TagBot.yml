@@ -1,0 +1,28 @@
+name: TagBot
+
+on:
+  schedule:
+    - cron: 0 12 * * *
+  workflow_dispatch:
+
+jobs:
+  build:
+    permissions:
+      actions: write
+      contents: write
+      pull-requests: read
+      statuses: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1"
+      - uses: julia-actions/cache@v2
+      - name: Install dependencies
+        run: julia -e 'using Pkg; Pkg.add(url="https://github.com/cadojo/ExperimentalTagBot.jl")'
+      - name: Build and deploy
+        env:
+          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }} # If authenticating with SSH deploy key
+          PACKAGE: ${{ github.event.repository.name }}
+        run: julia -e 'import GitHub as GH; auth = GH.authenticate(readchomp(`gh auth token`)); import ExperimentalTagBot; ExperimentalTagBot.create_releases(replace(ENV["PACKAGE"], ".jl"=>""); auth = auth)'
