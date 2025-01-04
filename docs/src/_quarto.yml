@@ -3,11 +3,11 @@ project:
     output-dir: ../build
 
 book:
-    title: "ExperimentalTagBot"
+    title: "TagBot"
     author: 
         name: "Joey Carpinelli"
         email: "joey@loopy.codes"
-    date: "2025-01-02"
+    date: "2025-01-03"
     chapters:
         - index.md
         - api/index.qmd 

@@ -9,11 +9,11 @@ _A minimum-viable [TagBot](https://github.com/JuliaRegistries/TagBot) implementa
 _Choose one of the following lines below._
 
 ```julia
-julia> import Pkg; Pkg.add("https://github.com/cadojo/ExperimentalTagBot.jl")
+julia> import Pkg; Pkg.add("https://github.com/cadojo/TagBot.jl")
 ```
 
 ```julia
-pkg> add https://github.com/cadojo/ExperimentalTagBot.jl
+pkg> add https://github.com/cadojo/TagBot.jl
 ```
 
 ## Usage
@@ -31,13 +31,11 @@ import GitHub
 auth = GitHub.authenticate(readchomp(`gh auth token`))
 ```
 
-With this authentication, you can use `ExperimentalTagBot` to query Git commits for each registered package version, find registered versions without tags, and create tags for all un-tagged registered package versions.
+With this authentication, you can use `TagBot` to query Git commits for each registered package version, find registered versions without tags, and create tags for all un-tagged registered package versions.
 
 ```julia
-import ExperimentalTagBot
+import TagBot
 
 package = "" # some package you own
-ExperimentalTagBot.create_releases(package; auth = auth)
+TagBot.create_releases(package; auth = auth)
 ```
-
-

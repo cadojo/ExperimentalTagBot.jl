@@ -4,17 +4,17 @@ number-depth: 2
 
 # Reference
 
-_Docstrings for ExperimentalTagBot._
+_Docstrings for TagBot._
 
 ```{julia}
 #| echo: false
 #| output: false
 using DocumenterQuarto
-using ExperimentalTagBot
+using TagBot
 ```
 
 ```{julia}
 #| echo: false
 #| output: asis
-DocumenterQuarto.autodoc(ExperimentalTagBot)
+DocumenterQuarto.autodoc(TagBot)
 ```

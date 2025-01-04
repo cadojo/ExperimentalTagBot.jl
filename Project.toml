@@ -1,5 +1,5 @@
-name = "ExperimentalTagBot"
-uuid = "930da1f0-8ee6-4872-b248-bb5528d4fa7c"
+name = "TagBot"
+uuid = "e0110173-4560-45c0-b46f-a4a4efc6ff66"
 authors = ["Joey Carpinelli <joey@loopy.codes>"]
 version = "0.1.0"
 
@@ -15,10 +15,10 @@ Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 [compat]
 julia = "1"
 Dates = "1"
-DocStringExtensions = "0.9.3"
-Git = "1.3.1"
-GitHub = "5.9.0"
-IOCapture = "0.2.5"
+DocStringExtensions = "0.9"
+Git = "1.3"
+GitHub = "5.9"
+IOCapture = "0.2"
 Markdown = "1"
 Pkg = "1"
 
@@ -27,3 +27,4 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
 test = ["Test"]
+
