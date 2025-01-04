@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -132,7 +166,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of Contents</h2>
    
   <ul>
-  <li><a href="#tagbot" id="toc-tagbot" class="nav-link active" data-scroll-target="#tagbot"><span class="header-section-number">2.1</span> <code>TagBot</code></a></li>
+  <li><a href="#untagged_versions" id="toc-untagged_versions" class="nav-link active" data-scroll-target="#untagged_versions"><span class="header-section-number">2.1</span> <code>untagged_versions</code></a></li>
+  <li><a href="#create_release" id="toc-create_release" class="nav-link" data-scroll-target="#create_release"><span class="header-section-number">2.2</span> <code>create_release</code></a></li>
+  <li><a href="#create_releases" id="toc-create_releases" class="nav-link" data-scroll-target="#create_releases"><span class="header-section-number">2.3</span> <code>create_releases</code></a></li>
   </ul>
 </nav>
     </div>
@@ -159,18 +195,52 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p><em>Docstrings for TagBot.</em></p>
-<section id="tagbot" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="tagbot"><span class="header-section-number">2.1</span> <code>TagBot</code></h2>
+<section id="untagged_versions" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="untagged_versions"><span class="header-section-number">2.1</span> <code>untagged_versions</code></h2>
 <div class="callout callout-style-simple callout-none no-icon">
 <div class="callout-body d-flex">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>A minimal TagBot implementation in Julia!</p>
-<section id="exports" class="level4 unnumbered">
-<h4 class="unnumbered anchored" data-anchor-id="exports">Exports</h4>
+<div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">untagged_versions</span>(package; registry, kwargs<span class="op">...</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Given a package name, return all registered versions which are not yet released.</p>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
 </section>
+<section id="create_release" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="create_release"><span class="header-section-number">2.2</span> <code>create_release</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found.</p>
+<p><code>TagBot.create_release</code> is a <code>Function</code>.</p>
+<pre><code># 1 method for generic function "create_release" from TagBot:
+ [1] create_release(package::AbstractString, version; prefix, kwargs...)
+     @ ~/work/ExperimentalTagBot.jl/ExperimentalTagBot.jl/src/TagBot.jl:271</code></pre>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="create_releases" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="create_releases"><span class="header-section-number">2.3</span> <code>create_releases</code></h2>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>No documentation found.</p>
+<p><code>TagBot.create_releases</code> is a <code>Function</code>.</p>
+<pre><code># 1 method for generic function "create_releases" from TagBot:
+ [1] create_releases(package::AbstractString; prefix, registry, kwargs...)
+     @ ~/work/ExperimentalTagBot.jl/ExperimentalTagBot.jl/src/TagBot.jl:302</code></pre>
 </div>
 </div>
 </div>

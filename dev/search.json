@@ -34,17 +34,37 @@
     "href": "api/index.html",
     "title": "2  Reference",
     "section": "",
-    "text": "2.1 TagBot\nDocstrings for TagBot.",
+    "text": "2.1 untagged_versions\nDocstrings for TagBot.",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Reference</span>"
     ]
   },
   {
-    "objectID": "api/index.html#tagbot",
-    "href": "api/index.html#tagbot",
+    "objectID": "api/index.html#untagged_versions",
+    "href": "api/index.html#untagged_versions",
     "title": "2  Reference",
     "section": "",
-    "text": "A minimal TagBot implementation in Julia!\n\nExports",
+    "text": "untagged_versions(package; registry, kwargs...)\nGiven a package name, return all registered versions which are not yet released.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#create_release",
+    "href": "api/index.html#create_release",
+    "title": "2  Reference",
+    "section": "2.2 create_release",
+    "text": "2.2 create_release\n\n\n\n\n\n\nNo documentation found.\nTagBot.create_release is a Function.\n# 1 method for generic function \"create_release\" from TagBot:\n [1] create_release(package::AbstractString, version; prefix, kwargs...)\n     @ ~/work/ExperimentalTagBot.jl/ExperimentalTagBot.jl/src/TagBot.jl:271",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Reference</span>"
+    ]
+  },
+  {
+    "objectID": "api/index.html#create_releases",
+    "href": "api/index.html#create_releases",
+    "title": "2  Reference",
+    "section": "2.3 create_releases",
+    "text": "2.3 create_releases\n\n\n\n\n\n\nNo documentation found.\nTagBot.create_releases is a Function.\n# 1 method for generic function \"create_releases\" from TagBot:\n [1] create_releases(package::AbstractString; prefix, registry, kwargs...)\n     @ ~/work/ExperimentalTagBot.jl/ExperimentalTagBot.jl/src/TagBot.jl:302",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Reference</span>"
     ]
