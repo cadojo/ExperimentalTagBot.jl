@@ -1,29 +1,33 @@
 project:
-    type: book
-    output-dir: ../build
+  type: book
+  output-dir: "../build"
 
 book:
-    title: "TagBot"
-    author: 
-        name: "Joey Carpinelli"
-        email: "joey@loopy.codes"
-    date: "2025-01-03"
-    chapters:
-        - index.md
-        - api/index.qmd 
+  title: "TagBot.jl"
+  author: "Joey Carpinelli"
+  date: today
+  sidebar: 
+    style: docked
+  repo-url: https://github.com/cadojo/ExperimentalTagBot.jl
+  repo-actions: [issue]
+  chapters:
+    - index.md
+    - api/index.qmd 
 
 toc-title: "Table of Contents"
 
 execute:
-    echo: false
-    output: true
-    cache: false
-    freeze: false
+  echo: false
+  output: true
+  cache: false
+  freeze: false
 
 bibliography: references.bib
 
 format:
-    html:
-        theme:
-            light: flatly
-            dark: darkly
+  html:
+    code-link: true
+    number-sections: false
+    theme: 
+      light: default
+      dark: darkly
