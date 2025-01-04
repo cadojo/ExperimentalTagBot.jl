@@ -26,4 +26,5 @@ jobs:
           arch: ${{ matrix.julia-arch }}
       # - uses: julia-actions/cache@v2
       - uses: julia-actions/julia-buildpkg@v1
+      - run: julia --project -e 'import Pkg; Pkg.update(); Pkg.build()'
       - uses: julia-actions/julia-runtest@v1
