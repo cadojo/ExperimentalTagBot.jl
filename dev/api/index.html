@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>2&nbsp; Reference – TagBot</title>
+<title>Reference – TagBot.jl</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -74,8 +74,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-8ea72dc5fed832574809a9c94082fbbb.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-4f6263ad221f763a4834f521a0a25b97.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-022d0653e62d99952369f70845bfc6e9.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-d898e72e1ef29cbfc3d8f612a64d366e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-ce75748d8ac772dd85d4d0cfccd2bde9.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -107,7 +107,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="nav-sidebar floating">
+<body class="nav-sidebar docked">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -116,7 +116,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/index.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Reference</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../api/index.html"><span class="chapter-title">Reference</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -128,11 +128,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="../">TagBot</a> 
+      <a href="../">TagBot.jl</a> 
         <div class="sidebar-tools-main">
+    <a href="https://github.com/cadojo/ExperimentalTagBot.jl" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
     </div>
@@ -146,14 +147,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Overview</span></span></a>
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Overview</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../api/index.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Reference</span></span></a>
+  <a href="../api/index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Reference</span></a>
   </div>
 </li>
     </ul>
@@ -166,18 +165,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of Contents</h2>
    
   <ul>
-  <li><a href="#untagged_versions" id="toc-untagged_versions" class="nav-link active" data-scroll-target="#untagged_versions"><span class="header-section-number">2.1</span> <code>untagged_versions</code></a></li>
-  <li><a href="#create_release" id="toc-create_release" class="nav-link" data-scroll-target="#create_release"><span class="header-section-number">2.2</span> <code>create_release</code></a></li>
-  <li><a href="#create_releases" id="toc-create_releases" class="nav-link" data-scroll-target="#create_releases"><span class="header-section-number">2.3</span> <code>create_releases</code></a></li>
+  <li><a href="#untagged_versions" id="toc-untagged_versions" class="nav-link active" data-scroll-target="#untagged_versions"><code>untagged_versions</code></a></li>
+  <li><a href="#create_release" id="toc-create_release" class="nav-link" data-scroll-target="#create_release"><code>create_release</code></a></li>
+  <li><a href="#create_releases" id="toc-create_releases" class="nav-link" data-scroll-target="#create_releases"><code>create_releases</code></a></li>
   </ul>
-</nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cadojo/ExperimentalTagBot.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Reference</span></h1>
+<h1 class="title"><span class="chapter-title">Reference</span></h1>
 </div>
 
 
@@ -195,8 +194,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p><em>Docstrings for TagBot.</em></p>
-<section id="untagged_versions" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="untagged_versions"><span class="header-section-number">2.1</span> <code>untagged_versions</code></h2>
+<section id="untagged_versions" class="level2">
+<h2 class="anchored" data-anchor-id="untagged_versions"><code>untagged_versions</code></h2>
 <div class="callout callout-style-simple callout-none no-icon">
 <div class="callout-body d-flex">
 <div class="callout-icon-container">
@@ -210,8 +209,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div style="page-break-after: always;"></div>
 </section>
-<section id="create_release" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="create_release"><span class="header-section-number">2.2</span> <code>create_release</code></h2>
+<section id="create_release" class="level2">
+<h2 class="anchored" data-anchor-id="create_release"><code>create_release</code></h2>
 <div class="callout callout-style-simple callout-none no-icon">
 <div class="callout-body d-flex">
 <div class="callout-icon-container">
@@ -222,14 +221,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><code>TagBot.create_release</code> is a <code>Function</code>.</p>
 <pre><code># 1 method for generic function "create_release" from TagBot:
  [1] create_release(package::AbstractString, version; prefix, kwargs...)
-     @ ~/work/ExperimentalTagBot.jl/ExperimentalTagBot.jl/src/TagBot.jl:271</code></pre>
+     @ ~/work/ExperimentalTagBot.jl/ExperimentalTagBot.jl/src/TagBot.jl:303</code></pre>
 </div>
 </div>
 </div>
 <div style="page-break-after: always;"></div>
 </section>
-<section id="create_releases" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="create_releases"><span class="header-section-number">2.3</span> <code>create_releases</code></h2>
+<section id="create_releases" class="level2">
+<h2 class="anchored" data-anchor-id="create_releases"><code>create_releases</code></h2>
 <div class="callout callout-style-simple callout-none no-icon">
 <div class="callout-body d-flex">
 <div class="callout-icon-container">
@@ -240,7 +239,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><code>TagBot.create_releases</code> is a <code>Function</code>.</p>
 <pre><code># 1 method for generic function "create_releases" from TagBot:
  [1] create_releases(package::AbstractString; prefix, registry, kwargs...)
-     @ ~/work/ExperimentalTagBot.jl/ExperimentalTagBot.jl/src/TagBot.jl:302</code></pre>
+     @ ~/work/ExperimentalTagBot.jl/ExperimentalTagBot.jl/src/TagBot.jl:334</code></pre>
 </div>
 </div>
 </div>
@@ -814,7 +813,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../index.html" class="pagination-link" aria-label="Overview">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Overview</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Overview</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
@@ -825,4 +824,4 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-</body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cadojo/ExperimentalTagBot.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

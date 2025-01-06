@@ -2,9 +2,9 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "TagBot",
+    "title": "TagBot.jl",
     "section": "",
-    "text": "1 🏷️🤖 Automated Package Releases in Julia\nA minimum-viable TagBot implementation in Julia!\nThis project is being actively developed! It works in local testing, and will be made more robust in 2025.",
+    "text": "🏷️🤖 Automated Package Releases in Julia\nA minimum-viable TagBot implementation in Julia!\nThis project is being actively developed! It works in local testing, and will be made more robust in 2025.",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
     ]
@@ -12,9 +12,9 @@
   {
     "objectID": "index.html#installation",
     "href": "index.html#installation",
-    "title": "TagBot",
-    "section": "1.1 Installation",
-    "text": "1.1 Installation\nChoose one of the following lines below.\njulia&gt; import Pkg; Pkg.add(\"https://github.com/cadojo/TagBot.jl\")\npkg&gt; add https://github.com/cadojo/TagBot.jl",
+    "title": "TagBot.jl",
+    "section": "Installation",
+    "text": "Installation\nChoose one of the following lines below.\njulia&gt; import Pkg; Pkg.add(\"https://github.com/cadojo/TagBot.jl\")\npkg&gt; add https://github.com/cadojo/TagBot.jl",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
     ]
@@ -22,9 +22,9 @@
   {
     "objectID": "index.html#usage",
     "href": "index.html#usage",
-    "title": "TagBot",
-    "section": "1.2 Usage",
-    "text": "1.2 Usage\nA minimum working example.\nThis package can use the GitHub API to query Julia’s General Registry for a package version’s PR, and then create a corresponding GitHub release. To do this, you’ll need to authenticate with the GitHub API. The simplest way is to install the GitHub CLI and authenticate with the following command: gh auth login. The GitHub CLI prompts will guide you through the one-time authentication process. Once you’ve authenticated the CLI, you can execute the code below to authenticate with the API.\nimport GitHub \nauth = GitHub.authenticate(readchomp(`gh auth token`))\nWith this authentication, you can use TagBot to query Git commits for each registered package version, find registered versions without tags, and create tags for all un-tagged registered package versions.\nimport TagBot\n\npackage = \"\" # some package you own\nTagBot.create_releases(package; auth = auth)",
+    "title": "TagBot.jl",
+    "section": "Usage",
+    "text": "Usage\nA minimum working example.\nThis package can use the GitHub API to query Julia’s General Registry for a package version’s PR, and then create a corresponding GitHub release. To do this, you’ll need to authenticate with the GitHub API. The simplest way is to install the GitHub CLI and authenticate with the following command: gh auth login. The GitHub CLI prompts will guide you through the one-time authentication process. Once you’ve authenticated the CLI, you can execute the code below to authenticate with the API.\nimport GitHub \nauth = GitHub.authenticate(readchomp(`gh auth token`))\nWith this authentication, you can use TagBot to query Git commits for each registered package version, find registered versions without tags, and create tags for all un-tagged registered package versions.\nimport TagBot\n\npackage = \"\" # some package you own\nTagBot.create_releases(package; auth = auth)",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Overview</span>"
     ]
@@ -32,9 +32,9 @@
   {
     "objectID": "api/index.html",
     "href": "api/index.html",
-    "title": "2  Reference",
+    "title": "Reference",
     "section": "",
-    "text": "2.1 untagged_versions\nDocstrings for TagBot.",
+    "text": "untagged_versions\nDocstrings for TagBot.",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Reference</span>"
     ]
@@ -42,7 +42,7 @@
   {
     "objectID": "api/index.html#untagged_versions",
     "href": "api/index.html#untagged_versions",
-    "title": "2  Reference",
+    "title": "Reference",
     "section": "",
     "text": "untagged_versions(package; registry, kwargs...)\nGiven a package name, return all registered versions which are not yet released.",
     "crumbs": [
@@ -52,9 +52,9 @@
   {
     "objectID": "api/index.html#create_release",
     "href": "api/index.html#create_release",
-    "title": "2  Reference",
-    "section": "2.2 create_release",
-    "text": "2.2 create_release\n\n\n\n\n\n\nNo documentation found.\nTagBot.create_release is a Function.\n# 1 method for generic function \"create_release\" from TagBot:\n [1] create_release(package::AbstractString, version; prefix, kwargs...)\n     @ ~/work/ExperimentalTagBot.jl/ExperimentalTagBot.jl/src/TagBot.jl:271",
+    "title": "Reference",
+    "section": "create_release",
+    "text": "create_release\n\n\n\n\n\n\nNo documentation found.\nTagBot.create_release is a Function.\n# 1 method for generic function \"create_release\" from TagBot:\n [1] create_release(package::AbstractString, version; prefix, kwargs...)\n     @ ~/work/ExperimentalTagBot.jl/ExperimentalTagBot.jl/src/TagBot.jl:303",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Reference</span>"
     ]
@@ -62,9 +62,9 @@
   {
     "objectID": "api/index.html#create_releases",
     "href": "api/index.html#create_releases",
-    "title": "2  Reference",
-    "section": "2.3 create_releases",
-    "text": "2.3 create_releases\n\n\n\n\n\n\nNo documentation found.\nTagBot.create_releases is a Function.\n# 1 method for generic function \"create_releases\" from TagBot:\n [1] create_releases(package::AbstractString; prefix, registry, kwargs...)\n     @ ~/work/ExperimentalTagBot.jl/ExperimentalTagBot.jl/src/TagBot.jl:302",
+    "title": "Reference",
+    "section": "create_releases",
+    "text": "create_releases\n\n\n\n\n\n\nNo documentation found.\nTagBot.create_releases is a Function.\n# 1 method for generic function \"create_releases\" from TagBot:\n [1] create_releases(package::AbstractString; prefix, registry, kwargs...)\n     @ ~/work/ExperimentalTagBot.jl/ExperimentalTagBot.jl/src/TagBot.jl:334",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Reference</span>"
     ]

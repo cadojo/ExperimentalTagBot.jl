@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Joey Carpinelli">
-<meta name="dcterms.date" content="2025-01-03">
+<meta name="dcterms.date" content="2025-01-06">
 
-<title>TagBot</title>
+<title>TagBot.jl</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -76,8 +76,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ea72dc5fed832574809a9c94082fbbb.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-4f6263ad221f763a4834f521a0a25b97.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-022d0653e62d99952369f70845bfc6e9.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-d898e72e1ef29cbfc3d8f612a64d366e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-ce75748d8ac772dd85d4d0cfccd2bde9.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -109,7 +109,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="nav-sidebar floating">
+<body class="nav-sidebar docked">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -118,7 +118,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Overview</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-title">Overview</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -130,11 +130,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">TagBot</a> 
+      <a href="./">TagBot.jl</a> 
         <div class="sidebar-tools-main">
+    <a href="https://github.com/cadojo/ExperimentalTagBot.jl" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
     </div>
@@ -148,14 +149,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Overview</span></span></a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Overview</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./api/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Reference</span></span></a>
+  <a href="./api/index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Reference</span></a>
   </div>
 </li>
     </ul>
@@ -168,20 +167,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of Contents</h2>
    
   <ul>
-  <li><a href="#automated-package-releases-in-julia" id="toc-automated-package-releases-in-julia" class="nav-link active" data-scroll-target="#automated-package-releases-in-julia"><span class="header-section-number">1</span> 🏷️🤖 Automated Package Releases in Julia</a>
+  <li><a href="#automated-package-releases-in-julia" id="toc-automated-package-releases-in-julia" class="nav-link active" data-scroll-target="#automated-package-releases-in-julia">🏷️🤖 Automated Package Releases in Julia</a>
   <ul class="collapse">
-  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation"><span class="header-section-number">1.1</span> Installation</a></li>
-  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage"><span class="header-section-number">1.2</span> Usage</a></li>
+  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a></li>
+  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
   </ul></li>
   </ul>
-</nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cadojo/ExperimentalTagBot.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">TagBot</h1>
+<h1 class="title">TagBot.jl</h1>
 </div>
 
 
@@ -191,14 +190,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Joey Carpinelli <a href="mailto:joey@loopy.codes" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+             <p>Joey Carpinelli </p>
           </div>
   </div>
     
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 3, 2025</p>
+      <p class="date">January 6, 2025</p>
     </div>
   </div>
   
@@ -210,18 +209,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="automated-package-releases-in-julia" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> 🏷️🤖 Automated Package Releases in Julia</h1>
+<section id="automated-package-releases-in-julia" class="level1">
+<h1>🏷️🤖 Automated Package Releases in Julia</h1>
 <p><em>A minimum-viable <a href="https://github.com/JuliaRegistries/TagBot">TagBot</a> implementation in Julia!</em></p>
 <p><strong>This project is being actively developed!</strong> It works in local testing, and will be made more robust in 2025.</p>
-<section id="installation" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="installation"><span class="header-section-number">1.1</span> Installation</h2>
+<section id="installation" class="level2">
+<h2 class="anchored" data-anchor-id="installation">Installation</h2>
 <p><em>Choose one of the following lines below.</em></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="im">import</span> <span class="bu">Pkg;</span> Pkg.add("https://github.com/cadojo/TagBot.jl")</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="sourceCode" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pkg<span class="op">&gt;</span> add https<span class="op">://</span>github.com<span class="op">/</span>cadojo<span class="op">/</span>TagBot.jl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="usage" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="usage"><span class="header-section-number">1.2</span> Usage</h2>
+<section id="usage" class="level2">
+<h2 class="anchored" data-anchor-id="usage">Usage</h2>
 <p><em>A minimum working example.</em></p>
 <p>This package can use the GitHub API to query Julia’s <a href="https://github.com/JuliaRegistries/General">General Registry</a> for a package version’s PR, and then create a corresponding GitHub release. To do this, you’ll need to authenticate with the GitHub API. The simplest way is to install the <a href="https://cli.github.com">GitHub CLI</a> and authenticate with the following command: <code>gh auth login</code>. The GitHub CLI prompts will guide you through the one-time authentication process. Once you’ve authenticated the CLI, you can execute the code below to authenticate with the API.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="bu">GitHub</span> </span>
@@ -803,7 +802,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./api/index.html" class="pagination-link" aria-label="Reference">
-        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Reference</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-title">Reference</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -812,4 +811,4 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-</body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cadojo/ExperimentalTagBot.jl/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
