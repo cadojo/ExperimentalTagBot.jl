@@ -102,7 +102,17 @@ Given a package name, return all registered versions which are not yet released.
 """
 function untagged_versions(package::AbstractString; registry="General", kwargs...)
     registered = registered_versions(package; registry=registry)
-    tags, metadata = GitHub.tags(repository_name(package_url(package)); kwargs...)
+
+    try
+        tags, metadata = GitHub.tags(repository_name(package_url(package)); kwargs...)
+    catch e
+        if e isa ErrorException
+            return registered
+        else
+            rethrow()
+        end
+    end
+
     tags = String[tag.tag for tag in tags if !isnothing(tag.tag)]
 
     for tag in tags
@@ -121,6 +131,10 @@ function parent_hash(version, versions)
     vs = map(VersionNumber, collect(versions))
 
     filter!(n -> n < v, vs)
+
+    if isempty(vs)
+        return nothing
+    end
 
     v = maximum(vs)
     return "v" * string(v)
@@ -147,8 +161,15 @@ repository between the version and its parent.
 """
 function find_pull_requests(package, version; kwargs...)
     repo = repository_name(package_url(package))
+    parent = parent_hash(version, registered_versions(package))
+
+    if isnothing(parent)
+        commits, metadata = GitHub.commits(repository_name(package_url(package)); kwargs...)
+        parent = commits[end].sha # TODO is the oldest commit what we want here?
+    end
+
     base = GitHub.commit(
-        repo, parent_hash(version, registered_versions(package)); kwargs...)
+        repo, parent; kwargs...)
     head = GitHub.commit(repo, registered_version_hash(package, version); kwargs...)
 
     base_date = string(Date(base.commit.author.date))
@@ -178,8 +199,15 @@ repository between the version and its parent.
 """
 function find_issues(package, version; kwargs...)
     repo = repository_name(package_url(package))
+    parent = parent_hash(version, registered_versions(package))
+
+    if isnothing(parent)
+        commits, metadata = GitHub.commits(repository_name(package_url(package)); kwargs...)
+        parent = commits[end].sha # TODO is the oldest commit what we want here?
+    end
+
     base = GitHub.commit(
-        repo, parent_hash(version, registered_versions(package)); kwargs...)
+        repo, parent; kwargs...)
     head = GitHub.commit(repo, registered_version_hash(package, version); kwargs...)
 
     base_date = string(Date(base.commit.author.date))
@@ -234,13 +262,17 @@ end
 function release_message(package::AbstractString, version; prefix=nothing, kwargs...)
     version = string(VersionNumber(version))
     base = parent_hash(version, registered_versions(package))
+    if isnothing(base)
+        commits, metadata = GitHub.commits(repository_name(package_url(package)); kwargs...)
+        base = commits[end].sha # TODO is the oldest commit what we want here?
+    end
     head = registered_version_hash(package, version)
 
     prefix = isnothing(prefix) ? package * "-" : prefix
     diff = GitHub.compare(
         repository_name(package_url(package)), base, head; kwargs...)
 
-    messages = ["*" * replace(commit.commit.message, "\n\n" => "\n")
+    messages = ["* " * replace(commit.commit.message, "\n\n" => "\n")
                 for commit in diff.commits]
     pull_requests = ["* $(pr.title) ([#$(pr.number)]($(pr.html_url)))"
                      for pr in find_pull_requests(package, version; kwargs...)]
