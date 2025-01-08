@@ -30,7 +30,7 @@ registry to the Git SHA1 hashes in the project location.
 This code was originally written by user @yakir12 on Julia's Discourse in 
 the following post: https://discourse.julialang.org/t/pkg-version-list/1257/10.
 """
-function registered_versions_map(package::AbstractString; registry="General")
+function registered_versions_map(package::AbstractString; registry = "General")
     registry = only(filter(r -> r.name == registry, Pkg.Registry.reachable_registries()))
 
     local pkg
@@ -41,8 +41,8 @@ function registered_versions_map(package::AbstractString; registry="General")
         if e isa ArgumentError
             throw(
                 ErrorException(
-                    "$package is not registered in the General package registry",
-                ),
+                "$package is not registered in the General package registry",
+            ),
             )
         else
             rethrow(e)
@@ -52,16 +52,16 @@ function registered_versions_map(package::AbstractString; registry="General")
     vs = [pair.first => pair.second.git_tree_sha1
           for
           pair in Pkg.Registry.registry_info(pkg).version_info]
-    sort!(vs, by=x -> x.first)
+    sort!(vs, by = x -> x.first)
     return Dict(["v" * string(pair.first) => pair.second for pair in vs])
 end
 
 """
 Given a package name, return all versions released in the general registry.
 """
-function registered_versions(package::AbstractString; registry="General")
+function registered_versions(package::AbstractString; registry = "General")
     vs = collect(keys(registered_versions_map(package)))
-    sort!(vs, by=VersionNumber)
+    sort!(vs, by = VersionNumber)
     return vs
 end
 
@@ -77,7 +77,7 @@ end
 Given a package name, return the project repository registered in the General 
 registry.
 """
-function package_url(package::AbstractString; registry="General")
+function package_url(package::AbstractString; registry = "General")
     reg = only(filter(r -> r.name == registry, Pkg.Registry.reachable_registries()))
     pkg = only(filter(pkg -> pkg.name == package, collect(values(reg.pkgs))))
     return Pkg.Registry.registry_info(pkg).repo
@@ -100,8 +100,8 @@ end
 """
 Given a package name, return all registered versions which are not yet released.
 """
-function untagged_versions(package::AbstractString; registry="General", kwargs...)
-    registered = registered_versions(package; registry=registry)
+function untagged_versions(package::AbstractString; registry = "General", kwargs...)
+    registered = registered_versions(package; registry = registry)
 
     try
         tags, metadata = GitHub.tags(repository_name(package_url(package)); kwargs...)
@@ -121,7 +121,7 @@ function untagged_versions(package::AbstractString; registry="General", kwargs..
     end
 
     tags = registered
-    sort!(tags, by=VersionNumber)
+    sort!(tags, by = VersionNumber)
 
     return tags
 end
@@ -143,13 +143,13 @@ end
 """
 Given a package name and version, return release PRs from in the provided registry.
 """
-function release_pull_requests(package, version; registry="General", kwargs...)
+function release_pull_requests(package, version; registry = "General", kwargs...)
     v = "v" * string(VersionNumber(version))
     results = GitHub.gh_get_json(
         GitHub.DEFAULT_API,
         "/search/issues";
         kwargs...,
-        params="q=$package%20$v%20in%3Atitle%20is%3Apr%20repo%3A$(repository_name(registry_url(registry)))",
+        params = "q=$package%20$v%20in%3Atitle%20is%3Apr%20repo%3A$(repository_name(registry_url(registry)))",
         kwargs...
     )
     return [GitHub.PullRequest(result) for result in results["items"]]
@@ -182,7 +182,7 @@ function find_pull_requests(package, version; kwargs...)
         GitHub.DEFAULT_API,
         "/search/issues";
         kwargs...,
-        params="q=merged%3A>=$base_date%20is%3Apr%20repo%3A$(repository_name(package_url(package)))",
+        params = "q=merged%3A>=$base_date%20is%3Apr%20repo%3A$(repository_name(package_url(package)))",
         kwargs...
     )
 
@@ -220,7 +220,7 @@ function find_issues(package, version; kwargs...)
         GitHub.DEFAULT_API,
         "/search/issues";
         kwargs...,
-        params="q=closed%3A>=$base_date%20is%3Aissue%20repo%3A$(repository_name(package_url(package)))",
+        params = "q=closed%3A>=$base_date%20is%3Aissue%20repo%3A$(repository_name(package_url(package)))",
         kwargs...
     )
 
@@ -237,29 +237,29 @@ Given the package name and version, return the latest release PR commit which
 has been merged.
 """
 function registered_version_hash(
-    package::AbstractString, version; registry="General", kwargs...
+        package::AbstractString, version; registry = "General", kwargs...
 )
     prs = [GitHub.pull_request(
-        repository_name(registry_url(registry)), pr.number; kwargs...)
+               repository_name(registry_url(registry)), pr.number; kwargs...)
            for
-           pr in release_pull_requests(package, version; registry=registry, kwargs...)]
+           pr in release_pull_requests(package, version; registry = registry, kwargs...)]
 
     filter!(pr -> pr.merged, prs) # remove PRs which did not merge
-    sort!(prs; by=pr -> pr.closed_at) # sort PRs by merge timestamp
+    sort!(prs; by = pr -> pr.closed_at) # sort PRs by merge timestamp
 
     pr = last(prs) # take the most recent merged PR
 
     lines = readlines(IOBuffer(pr.body))
     for line in lines
         if startswith(line, "- Commit: ")
-            prefix, hash = rsplit(line, ":"; limit=2)
+            prefix, hash = rsplit(line, ":"; limit = 2)
             return strip(hash)
         end
     end
     error("commit not found for $package $version")
 end
 
-function release_message(package::AbstractString, version; prefix=nothing, kwargs...)
+function release_message(package::AbstractString, version; prefix = nothing, kwargs...)
     version = string(VersionNumber(version))
     base = parent_hash(version, registered_versions(package))
     if isnothing(base)
@@ -268,7 +268,7 @@ function release_message(package::AbstractString, version; prefix=nothing, kwarg
     end
     head = registered_version_hash(package, version)
 
-    prefix = isnothing(prefix) ? package * "-" : prefix
+    prefix = isnothing(prefix) ? "" : prefix
     diff = GitHub.compare(
         repository_name(package_url(package)), base, head; kwargs...)
 
@@ -288,7 +288,7 @@ function release_message(package::AbstractString, version; prefix=nothing, kwarg
     end
 
     lines = (
-        "[Diff since $parent]($(package_url(package))/compare/$base...$head)",
+        "[$base...$head]($(package_url(package))/compare/$base...$head)",
         "\n## Closed Issues",
         join(issues, "\n"),
         "\n## Merged Pull Requests",
@@ -301,8 +301,8 @@ function release_message(package::AbstractString, version; prefix=nothing, kwarg
 end
 
 function create_release(
-    package::AbstractString, version; prefix=nothing, kwargs...)
-    prefix = isnothing(prefix) ? package * "-" : prefix
+        package::AbstractString, version; prefix = nothing, kwargs...)
+    prefix = isnothing(prefix) ? "" : prefix
 
     repo = repository_name(package_url(package))
     version = string(VersionNumber(version))
@@ -313,14 +313,14 @@ function create_release(
     default = Dict(
         "tag_name" => tag,
         "target_commitish" => hash,
-        "name" => "Release v$version for $package.jl",
+        "name" => "Release v$version for `$package`",
         "body" => release_message(package, version; kwargs...),
         "draft" => false,
         "prerelease" => false,
         "generate_release_notes" => false
     )
 
-    options = merge((; params=default), kwargs)
+    options = merge((; params = default), kwargs)
 
     @debug """creating release with the following options:
     $(collect(options))
@@ -332,11 +332,11 @@ function create_release(
 end
 
 function create_releases(
-    package::AbstractString; prefix=nothing, registry="General", kwargs...)
-    unreleased = untagged_versions(package; registry=registry, kwargs...)
+        package::AbstractString; prefix = nothing, registry = "General", kwargs...)
+    unreleased = untagged_versions(package; registry = registry, kwargs...)
 
     for version in unreleased
-        create_release(package, version; prefix=prefix, kwargs...)
+        create_release(package, version; prefix = prefix, kwargs...)
     end
 end
 
