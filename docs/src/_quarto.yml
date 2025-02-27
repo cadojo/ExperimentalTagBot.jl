@@ -1,0 +1,59 @@
+project:
+    type: book
+    output-dir: "../build"
+
+book:
+    title: "TagBot"
+    author: 
+        name: "Joey Carpinelli"
+        email: "joey@loopy.codes"
+    date: "2025-02-26"
+    chapters:
+        - index.md
+        - api/index.qmd 
+
+    navbar: 
+        background: primary
+        right: 
+        - text: Version
+          menu: 
+            - text: dev
+        
+    search: 
+        location: sidebar
+        type: textbox
+
+    twitter-card: true
+    open-graph: true
+    repo-url: https://github.com/cadojo/ExperimentalTagBot.jl
+    repo-actions: [issue]
+
+toc-title: "Table of Contents"
+
+execute:
+    echo: false
+    output: true
+    cache: false
+    freeze: false
+
+bibliography: references.bib
+
+format:
+    html:
+        include-in-header: 
+            file: _static/versions.html
+        code-link: true
+        number-sections: false
+        css: _static/style.css
+        resources: 
+            - _static/style.css
+            - _static/versions.html
+            - _static/theme.scss
+        theme: 
+            light: 
+                - _static/theme.scss
+                - default
+            dark: 
+                - _static/theme.scss
+                - darkly
+    
