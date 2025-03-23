@@ -1,7 +1,7 @@
 """
 A minimal TagBot implementation in Julia!
 
-## Exports 
+## Exports
 
 $(EXPORTS)
 """
@@ -22,12 +22,12 @@ import IOCapture
 using Dates
 
 """
-Given a package name, return map from all versions released in the general 
+Given a package name, return map from all versions released in the general
 registry to the Git SHA1 hashes in the project location.
 
 # Extended Help
 
-This code was originally written by user @yakir12 on Julia's Discourse in 
+This code was originally written by user @yakir12 on Julia's Discourse in
 the following post: https://discourse.julialang.org/t/pkg-version-list/1257/10.
 """
 function registered_versions_map(package::AbstractString; registry = "General")
@@ -74,7 +74,7 @@ function registry_url(registry)
 end
 
 """
-Given a package name, return the project repository registered in the General 
+Given a package name, return the project repository registered in the General
 registry.
 """
 function package_url(package::AbstractString; registry = "General")
@@ -156,7 +156,7 @@ function release_pull_requests(package, version; registry = "General", kwargs...
 end
 
 """
-Given a package name and version, return all pull requests from the package 
+Given a package name and version, return all pull requests from the package
 repository between the version and its parent.
 """
 function find_pull_requests(package, version; kwargs...)
@@ -170,7 +170,7 @@ function find_pull_requests(package, version; kwargs...)
 
     base = GitHub.commit(
         repo, parent; kwargs...)
-    head = GitHub.commit(repo, registered_version_hash(package, version); kwargs...)
+    head = GitHub.commit(repo, registered_version_info(package, version; kwargs...).commit_hash; kwargs...)
 
     base_date = string(Date(base.commit.author.date))
     base_date = replace(base_date, ":" => "%3A")
@@ -194,7 +194,7 @@ function find_pull_requests(package, version; kwargs...)
             if pr.closed_at <= head.commit.author.date]
 end
 """
-Given a package name and version, return all pull requests from the package 
+Given a package name and version, return all pull requests from the package
 repository between the version and its parent.
 """
 function find_issues(package, version; kwargs...)
@@ -208,7 +208,7 @@ function find_issues(package, version; kwargs...)
 
     base = GitHub.commit(
         repo, parent; kwargs...)
-    head = GitHub.commit(repo, registered_version_hash(package, version); kwargs...)
+    head = GitHub.commit(repo, registered_version_info(package, version; kwargs...).commit_hash; kwargs...)
 
     base_date = string(Date(base.commit.author.date))
     base_date = replace(base_date, ":" => "%3A")
@@ -233,10 +233,10 @@ function find_issues(package, version; kwargs...)
 end
 
 """
-Given the package name and version, return the latest release PR commit which 
+Given the package name and version, return the latest release PR commit which
 has been merged.
 """
-function registered_version_hash(
+function registered_version_info(
         package::AbstractString, version; registry = "General", kwargs...
 )
     prs = [GitHub.pull_request(
@@ -250,13 +250,14 @@ function registered_version_hash(
     pr = last(prs) # take the most recent merged PR
 
     lines = readlines(IOBuffer(pr.body))
-    for line in lines
-        if startswith(line, "- Commit: ")
-            prefix, hash = rsplit(line, ":"; limit = 2)
-            return strip(hash)
-        end
-    end
-    error("commit not found for $package $version")
+    commit_line_idx = findfirst(startswith("- Commit: "), lines)
+    isnothing(commit_line_idx) && error("commit not found for $package $version")
+    _, commit_hash = rsplit(lines[commit_line_idx], ":"; limit = 2)
+    commit_hash = strip(replace(commit_hash, "\r\n" => "\n"))
+    m = match(r"(?s)<!-- BEGIN RELEASE NOTES -->\n`````(.*)`````\n<!-- END RELEASE NOTES -->", pr.body)
+    release_notes = isnothing(m) ? nothing : strip(m[1])
+
+    return (; commit_hash, release_notes)
 end
 
 function release_message(package::AbstractString, version; prefix = nothing, kwargs...)
@@ -266,8 +267,8 @@ function release_message(package::AbstractString, version; prefix = nothing, kwa
         commits, metadata = GitHub.commits(repository_name(package_url(package)); kwargs...)
         base = commits[end].sha # TODO is the oldest commit what we want here?
     end
-    head = registered_version_hash(package, version)
-
+    info = registered_version_info(package, version; kwargs...)
+    head = info.commit_hash
     prefix = isnothing(prefix) ? "" : prefix
     diff = GitHub.compare(
         repository_name(package_url(package)), base, head; kwargs...)
@@ -287,14 +288,17 @@ function release_message(package::AbstractString, version; prefix = nothing, kwa
         issues = ["None"]
     end
 
+    release_notes = isnothing(info.release_notes) ? tuple() : (info.release_notes,)
     lines = (
-        "[$base...$head]($(package_url(package))/compare/$base...$head)",
-        "\n## Closed Issues",
-        join(issues, "\n"),
-        "\n## Merged Pull Requests",
+        "## $package $version",
+        release_notes...,
+        "[Diff since $base]($(package_url(package))/compare/$base...$head)",
+        "\n**Merged pull requests:**",
         join(pull_requests, "\n"),
-        "\n## Changelog",
-        join(messages, "\n")
+        "\n**Closed issues:**",
+        join(issues, "\n"),
+        # "\n### Commits",
+        # join(messages, "\n")
     )
 
     return join(lines, "\n")
@@ -306,14 +310,15 @@ function create_release(
 
     repo = repository_name(package_url(package))
     version = string(VersionNumber(version))
-    hash = registered_version_hash(package, version)
+    hash = registered_version_info(package, version; kwargs...).commit_hash
 
     tag = "$(prefix)v$(version)"
 
     default = Dict(
         "tag_name" => tag,
         "target_commitish" => hash,
-        "name" => "Release v$version for `$package`",
+        # "name" => "Release v$version for `$package`",
+        "name" => tag,
         "body" => release_message(package, version; kwargs...),
         "draft" => false,
         "prerelease" => false,
@@ -322,7 +327,7 @@ function create_release(
 
     options = merge((; params = default), kwargs)
 
-    @debug """creating release with the following options:
+    @debug """creating release for repo $(repo) with the following options:
     $(collect(options))
     """
 
