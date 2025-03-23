@@ -54,7 +54,7 @@
     "href": "api/index.html#create_release",
     "title": "Reference",
     "section": "create_release",
-    "text": "create_release\n\n\n\n\n\n\nNo documentation found.\nTagBot.create_release is a Function.\n# 1 method for generic function \"create_release\" from TagBot:\n [1] create_release(package::AbstractString, version; prefix, kwargs...)\n     @ ~/work/ExperimentalTagBot.jl/ExperimentalTagBot.jl/src/TagBot.jl:303",
+    "text": "create_release\n\n\n\n\n\n\nNo documentation found.\nTagBot.create_release is a Function.\n# 1 method for generic function \"create_release\" from TagBot:\n [1] create_release(package::AbstractString, version; prefix, kwargs...)\n     @ ~/work/ExperimentalTagBot.jl/ExperimentalTagBot.jl/src/TagBot.jl:307",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Reference</span>"
     ]
@@ -64,7 +64,7 @@
     "href": "api/index.html#create_releases",
     "title": "Reference",
     "section": "create_releases",
-    "text": "create_releases\n\n\n\n\n\n\nNo documentation found.\nTagBot.create_releases is a Function.\n# 1 method for generic function \"create_releases\" from TagBot:\n [1] create_releases(package::AbstractString; prefix, registry, kwargs...)\n     @ ~/work/ExperimentalTagBot.jl/ExperimentalTagBot.jl/src/TagBot.jl:334",
+    "text": "create_releases\n\n\n\n\n\n\nNo documentation found.\nTagBot.create_releases is a Function.\n# 1 method for generic function \"create_releases\" from TagBot:\n [1] create_releases(package::AbstractString; prefix, registry, kwargs...)\n     @ ~/work/ExperimentalTagBot.jl/ExperimentalTagBot.jl/src/TagBot.jl:339",
     "crumbs": [
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Reference</span>"
     ]
